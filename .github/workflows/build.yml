@@ -1,6 +1,6 @@
 name: Build YouTube Music
 
-
+  
 on:
   label:
     types: [created, edited]
