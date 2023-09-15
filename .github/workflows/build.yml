@@ -11,7 +11,7 @@ on:
       - 'feat/typescript'
 
 env:
-  NODE_VERSION: "16.x"
+  NODE_VERSION: "18.x"
 
 jobs:
   build:
