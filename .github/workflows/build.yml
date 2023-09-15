@@ -25,11 +25,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Expose yarn config as "$GITHUB_OUTPUT"
-        id: yarn-config
-        shell: bash
-        run: |
-          echo "CACHE_FOLDER=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      # - name: Expose yarn config as "$GITHUB_OUTPUT"
+      #   id: yarn-config
+      #   shell: bash
+      #   run: |
+      #     echo "CACHE_FOLDER=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
       # Yarn rotates the downloaded cache archives, @see https://github.com/actions/setup-node/issues/325
       # Yarn cache is also reusable between arch and os.
@@ -108,7 +108,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release YouTube Music
-    if: github.repository == 'th-ch/youtube-music' && github.ref == 'refs/heads/master'
+    if: github.repository != 'th-ch/youtube-music' && github.ref == 'refs/heads/master'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -175,32 +175,32 @@ jobs:
           draft: true
           searchLimit: 1
 
-      - name: Publish Release (if it does not exist)
-        if: ${{ env.VERSION_HASH == '' }}
-        uses: irongut/EditRelease@v1.2.0
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          id: ${{ steps.get_draft_release.outputs.id }}
-          draft: false
-          prerelease: false
-          replacename: true
-          name: ${{ env.VERSION_TAG }}
-          replacebody: true
-          body: |
-            See [changelog](https://github.com/th-ch/youtube-music/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
+      # - name: Publish Release (if it does not exist)
+      #   if: ${{ env.VERSION_HASH == '' }}
+      #   uses: irongut/EditRelease@v1.2.0
+      #   with:
+      #     token: ${{ secrets.GH_TOKEN }}
+      #     id: ${{ steps.get_draft_release.outputs.id }}
+      #     draft: false
+      #     prerelease: false
+      #     replacename: true
+      #     name: ${{ env.VERSION_TAG }}
+      #     replacebody: true
+      #     body: |
+      #       # See [changelog](https://github.com/th-ch/youtube-music/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
 
-            Thanks to all contributors! 🏅
+      #       Thanks to all contributors! 🏅
 
       - name: Update changelog
         if: ${{ env.VERSION_HASH == '' }}
         run: |
           yarn changelog
 
-      - name: Commit changelog
-        if: ${{ env.VERSION_HASH == '' }}
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Update changelog for ${{ env.VERSION_TAG }}
-          file_pattern: "changelog.md"
-          commit_user_name: CI
-          commit_user_email: th-ch@users.noreply.github.com
+      # - name: Commit changelog
+      #   if: ${{ env.VERSION_HASH == '' }}
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: Update changelog for ${{ env.VERSION_TAG }}
+      #     file_pattern: "changelog.md"
+      #     commit_user_name: CI
+      #     commit_user_email: th-ch@users.noreply.github.com
